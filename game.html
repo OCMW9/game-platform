@@ -59,7 +59,11 @@ button {
 <header>
     <button onclick="goBack()">← Back</button>
     <strong id="gameTitle">Game Player</strong>
-    <button onclick="goFullscreen()">⛶ Fullscreen</button>
+
+    <div>
+        <button onclick="openGameBlank()">↗ New Tab</button>
+        <button onclick="goFullscreen()">⛶ Fullscreen</button>
+    </div>
 </header>
 
 <div id="message">Loading game...</div>
@@ -86,6 +90,44 @@ function goBack() {
 
 function goFullscreen() {
     document.getElementById("game").requestFullscreen();
+}
+function openGameBlank() {
+    const blank = window.open("about:blank", "_blank");
+
+    if (!blank) {
+        alert("Please allow pop-ups for this website.");
+        return;
+    }
+
+    blank.document.open();
+    blank.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>${gameTitle.replace(/[<>&"]/g, "")}</title>
+            <style>
+                html, body {
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                    background: black;
+                }
+                iframe {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                }
+            </style>
+        </head>
+        <body></body>
+        </html>
+    `);
+    blank.document.close();
+
+    const frame = blank.document.createElement("iframe");
+    frame.src = gameURL;
+    blank.document.body.appendChild(frame);
 }
 </script>
 
