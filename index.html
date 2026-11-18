@@ -1,1 +1,60 @@
+\<!DOCTYPE html>
 
+\<html lang="en"> \<head> \<meta charset="UTF-8"> \<meta name="viewport" content="width=device-width, initial-scale=1.0"> \<title>Game Platform\</title>
+
+\<style> \* {     margin: 0;     padding: 0;     box-sizing: border-box; }  body {     background: #090b14;     color: #ffffff;     font-family: Arial, sans-serif;     min-height: 100vh; }  header {     height: 75px;     display: flex;     align-items: center;     justify-content: space-between;     padding: 0 6%;     background: #101321;     border-bottom: 1px solid #24283d; }  .logo {     font-size: 23px;     font-weight: bold;     color: #a78bfa; }  header button {     background: #7c3aed;     border: none;     color: white;     padding: 11px 18px;     border-radius: 8px;     cursor: pointer;     font-weight: bold; }  header button\:hover {     background: #6d28d9; }  main {     max-width: 1200px;     margin: auto;     padding: 45px 25px; }  .welcome {     margin-bottom: 35px; }  .welcome h1 {     font-size: 36px;     margin-bottom: 12px; }  .welcome p {     color: #9298b4; }  .search {     width: 100%;     padding: 15px;     background: #151a2b;     border: 1px solid #292f49;     border-radius: 10px;     color: white;     font-size: 15px;     margin-bottom: 35px;     outline: none; }  .search\:focus {     border-color: #8b5cf6; }  .section-title {     font-size: 21px;     margin-bottom: 20px; }  .games {     display: grid;     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));     gap: 20px; }  .game-card {     background: #151a2b;     border: 1px solid #252b43;     border-radius: 13px;     overflow: hidden;     transition: 0.2s;     cursor: pointer; }  .game-card\:hover {     transform: translateY(-5px);     border-color: #8b5cf6; }  .game-image {     height: 145px;     background: linear-gradient(135deg, #312e81, #7c3aed);     display: flex;     align-items: center;     justify-content: center;     font-size: 42px; }  .game-info {     padding: 17px; }  .game-info h3 {     margin-bottom: 8px; }  .game-info p {     color: #9298b4;     font-size: 13px; }  .empty {     color: #9298b4;     margin-top: 20px;     display: none; }  footer {     text-align: center;     color: #626985;     padding: 40px;     font-size: 13px; } \</style>
+
+\</head>
+
+\<body>
+
+\<header>     \<div class="logo">GAME PLATFORM\</div>     \<button onclick="openBlank()">Open in about\:blank ↗\</button> \</header>
+
+\<main>
+
+```
+<section class="welcome">
+    <h1>Your Games. Your World.</h1>
+    <p>Choose a game and jump in.</p>
+</section>
+
+<input
+    class="search"
+    type="text"
+    id="search"
+    placeholder="Search games..."
+    oninput="searchGames()"
+>
+
+<h2 class="section-title">All Games</h2>
+
+<div class="games" id="games">
+
+    <div class="game-card" data-name="example game">
+        <div class="game-image">🎮</div>
+        <div class="game-info">
+            <h3>Example Game</h3>
+            <p>Your first game will appear here.</p>
+        </div>
+    </div>
+
+    <div class="game-card" data-name="coming soon">
+        <div class="game-image">🌌</div>
+        <div class="game-info">
+            <h3>Coming Soon</h3>
+            <p>More games are on the way.</p>
+        </div>
+    </div>
+
+</div>
+
+<p class="empty" id="empty">No games found.</p>
+```
+
+\</main>
+
+\<footer>     Game Platform • Built for multiplayer gaming \</footer>
+
+\<script> function searchGames() {     const query = document.getElementById("search").value.toLowerCase();     const cards = document.querySelectorAll(".game-card");     let visible = 0;      cards.forEach(card => {         const match = card.dataset.name.includes(query);         card.style.display = match ? "" : "none";         if (match) visible++;     });      document.getElementById("empty").style.display =         visible === 0 ? "block" : "none"; }  function openBlank() {     const newTab = window\.open("about\:blank", "\_blank");      if (!newTab) {         alert("Please allow pop-ups for this website.");         return;     }      const html = "\<!DOCTYPE html>" + document.documentElement.outerHTML;      newTab.document.open();     newTab.document.write(html);     newTab.document.close(); } \</script>
+
+\</body> \</html>
