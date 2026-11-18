@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Player</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #090b14;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: #111525;
+}
+
+button {
+    background: #8057ff;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#game {
+    width: 100%;
+    height: calc(100vh - 60px);
+    border: none;
+    background: #000;
+}
+
+#message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <button onclick="goBack()">← Back</button>
+    <strong id="gameTitle">Game Player</strong>
+    <button onclick="goFullscreen()">⛶ Fullscreen</button>
+</header>
+
+<div id="message">Loading game...</div>
+
+<iframe id="game" allowfullscreen></iframe>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const gameURL = params.get("url");
+const gameTitle = params.get("title") || "Game Player";
+
+document.getElementById("gameTitle").textContent = gameTitle;
+
+if (gameURL && (gameURL.startsWith("https://") || gameURL.startsWith("http://"))) {
+    document.getElementById("game").src = gameURL;
+    document.getElementById("message").style.display = "none";
+} else {
+    document.getElementById("message").textContent = "No valid game URL provided.";
+}
+
+function goBack() {
+    window.location.href = "index.html";
+}
+
+function goFullscreen() {
+    document.getElementById("game").requestFullscreen();
+}
+</script>
+
+</body>
+</html>
