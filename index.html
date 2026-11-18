@@ -199,12 +199,9 @@ async function loadGames() {
     try {
         const response = await fetch("games.json?v=" + Date.now());
 
-        if (!response.ok) {
-            throw new Error("Could not load games.json");
-        }
+        if (!response.ok) throw new Error("Could not load games");
 
         const data = await response.json();
-
         container.innerHTML = "";
 
         data.games.forEach(game => {
@@ -212,20 +209,48 @@ async function loadGames() {
             card.className = "game-card";
             card.dataset.name = game.name.toLowerCase();
 
-            card.innerHTML = `
-                <div class="game-image">${game.image}</div>
-                <div class="game-info">
-                    <h3></h3>
-                    <p></p>
-                </div>
-            `;
+            const image = document.createElement("div");
+            image.className = "game-image";
+            image.textContent = game.image || "🎮";
 
-            card.querySelector("h3").textContent = game.name;
-            card.querySelector("p").textContent = game.description;
+            const info = document.createElement("div");
+            info.className = "game-info";
+
+            const title = document.createElement("h3");
+            title.textContent = game.name;
+
+            const description = document.createElement("p");
+            description.textContent = game.description;
+
+            info.appendChild(title);
+            info.appendChild(description);
+
+            card.appendChild(image);
+            card.appendChild(info);
 
             if (game.url) {
-                card.style.cursor = "pointer";
-                card.onclick = () => window.open(game.url, "_blank");
+                const actions = document.createElement("div");
+                actions.style.padding = "12px";
+
+                const play = document.createElement("button");
+                play.textContent = "Play";
+                play.onclick = () => {
+                    const viewer = new URL("game.html", document.baseURI);
+                    viewer.searchParams.set("url", game.url);
+                    viewer.searchParams.set("title", game.name);
+                    window.location.href = viewer.href;
+                };
+
+                const newTab = document.createElement("button");
+                newTab.textContent = "Open in New Tab";
+                newTab.style.marginLeft = "8px";
+                newTab.onclick = () => {
+                    window.open(game.url, "_blank", "noopener,noreferrer");
+                };
+
+                actions.appendChild(play);
+                actions.appendChild(newTab);
+                card.appendChild(actions);
             }
 
             container.appendChild(card);
@@ -234,25 +259,10 @@ async function loadGames() {
         searchGames();
 
     } catch (error) {
-        container.innerHTML = "<p>Unable to load games. Please try again later.</p>";
+        container.innerHTML =
+            "<p>Unable to load games. Please try again later.</p>";
         console.error(error);
     }
-}
-
-function searchGames() {
-    const query = document.getElementById("search").value.toLowerCase();
-    const cards = document.querySelectorAll(".game-card");
-    let visible = 0;
-
-    cards.forEach(card => {
-        const match = card.dataset.name.includes(query);
-        card.style.display = match ? "" : "none";
-
-        if (match) visible++;
-    });
-
-    document.getElementById("empty").style.display =
-        visible === 0 ? "block" : "none";
 }
 
 async function openBlank() {
