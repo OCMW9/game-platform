@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dodge the Blocks</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #090b14;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 { margin: 15px; }
+
+#score {
+    font-size: 22px;
+    margin: 10px;
+}
+
+canvas {
+    background: #151a2b;
+    border: 2px solid #8057ff;
+    max-width: 95%;
+    display: block;
+    margin: auto;
+    touch-action: none;
+}
+
+button {
+    background: #8057ff;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 12px;
+    font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧱 Dodge the Blocks</h1>
+<div id="score">Score: 0</div>
+
+<canvas id="game" width="500" height="600"></canvas>
+
+<button id="start">Start Game</button>
+
+<p>Use ← → or A and D to move.</p>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const scoreDisplay = document.getElementById("score");
+const startButton = document.getElementById("start");
+
+let player, blocks, score, running, keys, animation;
+
+function resetGame() {
+    player = { x: 225, y: 540, width: 50, height: 30 };
+    blocks = [];
+    score = 0;
+    running = true;
+    keys = {};
+    scoreDisplay.textContent = "Score: 0";
+    startButton.textContent = "Restart";
+    cancelAnimationFrame(animation);
+    loop();
+}
+
+document.addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
+});
+
+document.addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
+});
+
+startButton.addEventListener("click", resetGame);
+
+function loop() {
+    if (!running) return;
+
+    ctx.clearRect(0, 0, 500, 600);
+
+    if (keys["arrowleft"] || keys["a"]) player.x -= 6;
+    if (keys["arrowright"] || keys["d"]) player.x += 6;
+
+    player.x = Math.max(0, Math.min(450, player.x));
+
+    ctx.fillStyle = "#8057ff";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    if (Math.random() < 0.025) {
+        blocks.push({
+            x: Math.random() * 470,
+            y: -30,
+            size: 25 + Math.random() * 25,
+            speed: 3 + Math.random() * 3
+        });
+    }
+
+    blocks.forEach(block => {
+        block.y += block.speed;
+
+        ctx.fillStyle = "#ff5252";
+        ctx.fillRect(block.x, block.y, block.size, block.size);
+
+        if (
+            player.x < block.x + block.size &&
+            player.x + player.width > block.x &&
+            player.y < block.y + block.size &&
+            player.y + player.height > block.y
+        ) {
+            running = false;
+        }
+    });
+
+    blocks = blocks.filter(block => block.y < 620);
+
+    score++;
+    scoreDisplay.textContent = "Score: " + Math.floor(score / 10);
+
+    if (!running) {
+        ctx.fillStyle = "white";
+        ctx.font = "36px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", 250, 280);
+        ctx.font = "20px Arial";
+        ctx.fillText("Press Restart to play again", 250, 320);
+        return;
+    }
+
+    animation = requestAnimationFrame(loop);
+}
+</script>
+
+</body>
+</html>
