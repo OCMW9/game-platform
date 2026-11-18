@@ -193,6 +193,21 @@ footer {
 </footer>
 
 <script>
+function searchGames() {
+    const query = document.getElementById("search").value.toLowerCase();
+    const cards = document.querySelectorAll(".game-card");
+    let visible = 0;
+
+    cards.forEach(card => {
+        const match = card.dataset.name.includes(query);
+        card.style.display = match ? "" : "none";
+
+        if (match) visible++;
+    });
+
+    document.getElementById("empty").style.display =
+        visible === 0 ? "block" : "none";
+}
 async function loadGames() {
     const container = document.getElementById("games");
 
