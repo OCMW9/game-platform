@@ -193,6 +193,52 @@ footer {
 </footer>
 
 <script>
+async function loadGames() {
+    const container = document.getElementById("games");
+
+    try {
+        const response = await fetch("games.json?v=" + Date.now());
+
+        if (!response.ok) {
+            throw new Error("Could not load games.json");
+        }
+
+        const data = await response.json();
+
+        container.innerHTML = "";
+
+        data.games.forEach(game => {
+            const card = document.createElement("div");
+            card.className = "game-card";
+            card.dataset.name = game.name.toLowerCase();
+
+            card.innerHTML = `
+                <div class="game-image">${game.image}</div>
+                <div class="game-info">
+                    <h3></h3>
+                    <p></p>
+                </div>
+            `;
+
+            card.querySelector("h3").textContent = game.name;
+            card.querySelector("p").textContent = game.description;
+
+            if (game.url) {
+                card.style.cursor = "pointer";
+                card.onclick = () => window.open(game.url, "_blank");
+            }
+
+            container.appendChild(card);
+        });
+
+        searchGames();
+
+    } catch (error) {
+        container.innerHTML = "<p>Unable to load games. Please try again later.</p>";
+        console.error(error);
+    }
+}
+
 function searchGames() {
     const query = document.getElementById("search").value.toLowerCase();
     const cards = document.querySelectorAll(".game-card");
@@ -219,14 +265,7 @@ async function openBlank() {
 
     newTab.document.write(`
         <html>
-        <body style="
-            background:#090b14;
-            color:white;
-            font-family:Arial;
-            display:grid;
-            place-items:center;
-            height:100vh;
-        ">
+        <body style="background:#090b14;color:white;font-family:Arial;display:grid;place-items:center;height:100vh;">
             <h2>Loading Game Platform...</h2>
         </body>
         </html>
@@ -238,9 +277,7 @@ async function openBlank() {
             { cache: "no-store" }
         );
 
-        if (!response.ok) {
-            throw new Error("Could not load platform");
-        }
+        if (!response.ok) throw new Error("Could not load platform");
 
         let html = await response.text();
 
@@ -254,10 +291,13 @@ async function openBlank() {
         newTab.document.close();
 
     } catch (error) {
-        newTab.document.body.innerHTML =
-            "<h2>Unable to load Game Platform</h2><p>Please try again.</p>";
+        newTab.document.open();
+        newTab.document.write("<h2>Unable to load Game Platform. Please try again.</h2>");
+        newTab.document.close();
     }
 }
+
+loadGames();
 </script>
 
 </body>
