@@ -1,10 +1,10 @@
 {
   "games": [
     {
-      "name": "Coming Soon",
-      "description": "More games are on the way.",
-      "image": "🎮",
-      "url": ""
+      "name": "Dodge the Blocks",
+      "description": "Avoid falling blocks and beat your high score!",
+      "image": "🧱",
+      "url": "https://ocmw9.github.io/game-platform/dodge.html"
     }
   ]
 }
